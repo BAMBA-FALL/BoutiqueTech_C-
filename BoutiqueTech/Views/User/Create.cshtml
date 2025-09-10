@@ -1,0 +1,49 @@
+﻿@model BoutiqueTech.Models.UserModel
+
+@{
+    ViewData["Title"] = "Inscription";
+}
+
+<h2 class="text-center mb-4">Inscription</h2>
+
+<div class="d-flex justify-content-center">
+    <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%;">
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label asp-for="Nom" class="form-label"></label>
+                <input asp-for="Nom" class="form-control" value="Fall" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Prenom" class="form-label"></label>
+                <input asp-for="Prenom" class="form-control" value="Khadim" />
+                <span asp-validation-for="Prenom" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" value="khadim.fall@example.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="MotDePasse" class="form-label"></label>
+                <input asp-for="MotDePasse" type="password" class="form-control" />
+                <span asp-validation-for="MotDePasse" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Adresse" class="form-label"></label>
+                <input asp-for="Adresse" class="form-control" value="1 rue Paris, 75000" />
+                <span asp-validation-for="Adresse" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Telephone" class="form-label"></label>
+                <input asp-for="Telephone" class="form-control" value="+33000000000" />
+                <span asp-validation-for="Telephone" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

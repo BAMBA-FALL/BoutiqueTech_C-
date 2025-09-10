@@ -1,0 +1,32 @@
+﻿@model BoutiqueTech.Models.UserModel
+
+@{
+    ViewData["Title"] = "Connexion";
+}
+
+<h2 class="text-center mb-4">Connexion</h2>
+
+<div class="d-flex justify-content-center">
+    <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="MotDePasse" class="form-label"></label>
+                <input asp-for="MotDePasse" type="password" class="form-control" />
+                <span asp-validation-for="MotDePasse" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+        </form>
+        <div class="mt-3 text-center">
+            <small>Pas encore inscrit ? <a asp-controller="User" asp-action="Create">Créer un compte</a></small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

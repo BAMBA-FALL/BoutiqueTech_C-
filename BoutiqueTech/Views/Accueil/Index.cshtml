@@ -1,0 +1,61 @@
+﻿@model IEnumerable<BoutiqueTech.Models.Produit>
+@{
+    ViewData["Title"] = "Accueil - BoutiqueTech";
+}
+
+<div class="hero-section bg-primary text-white text-center py-5 mb-5 rounded">
+    <div class="container">
+        <h1 class="display-4">
+            <i class="fas fa-laptop"></i> Bienvenue chez BoutiqueTech
+        </h1>
+        <p class="lead">Découvrez les dernières technologies et innovations du monde numérique</p>
+        <p class="mb-4">Smartphones, ordinateurs, tablettes, accessoires gaming et bien plus encore !</p>
+        <div class="d-flex justify-content-center">
+            <a asp-controller="Produits" asp-action="Index" asp-route-vue="catalogue" class="btn btn-light btn-lg">
+                <i class="fas fa-store"></i> Voir le Catalogue Complet
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Section produits vedettes -->
+    <h2 class="text-center mb-4">
+        <i class="fas fa-star"></i> Produits Vedettes
+    </h2>
+    
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var produit in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <carte-produit produit="@produit" afficher-actions="false"></carte-produit>
+                </div>
+            }
+        </div>
+        
+        <div class="text-center mt-5">
+            <div class="bg-light p-4 rounded">
+                <h4>Vous voulez voir plus de produits ?</h4>
+                <p class="text-muted">Explorez notre catalogue complet</p>
+                <a asp-controller="Produits" asp-action="Index" asp-route-vue="catalogue" class="btn btn-primary btn-lg">
+                    <i class="fas fa-th-large"></i> Catalogue Complet
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">Aucun produit disponible</h4>
+            <p class="text-muted">Notre catalogue sera bientôt disponible.</p>
+            <div class="d-flex justify-content-center gap-2">
+                <a asp-controller="Produits" asp-action="Index" asp-route-vue="catalogue" class="btn btn-primary btn-lg">
+                    <i class="fas fa-store"></i> Visiter le catalogue
+                </a>
+            </div>
+        </div>
+    }
+</div>

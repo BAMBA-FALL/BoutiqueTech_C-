@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Politique de Confidentialité";
+}
+
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle"></i> Informations sur BoutiqueTech
+                    </h5>
+                    <p class="card-text">
+                        BoutiqueTech est une application de démonstration développée dans le cadre du cours
+                        <strong>"Retail (e-commerce)"</strong> de ESTIAM PARIS , sous la supervision du
+                        <strong>Professeur Marcel Stefan Wagner, PhD</strong>.
+                    </p>
+
+                    <h6><i class="fas fa-cogs"></i> Fonctionnalités implémentées :</h6>
+                    <ul>
+                        <li>Gestion complète des produits (CRUD)</li>
+                        <li>Recherche et filtrage avancés</li>
+                        <li>Interface responsive avec Bootstrap 5.3</li>
+                        <li>Tag Helpers personnalisés</li>
+                        <li>Validation des formulaires côté client et serveur</li>
+                        <li>Stockage en mémoire (sans base de données)</li>
+                        <li>Messages de confirmation et d'erreur</li>
+                    </ul>
+
+                    <h6><i class="fas fa-laptop-code"></i> Technologies utilisées :</h6>
+                    <ul>
+                        <li>ASP.NET Core 8.0 MVC</li>
+                        <li>C# avec Razor Pages</li>
+                        <li>Bootstrap 5.3 + Font Awesome</li>
+                        <li>jQuery pour les interactions</li>
+                        <li>Tag Helpers personnalisés</li>
+                        <li>Validation avec DataAnnotations</li>
+                    </ul>
+
+                    <h6><i class="fas fa-database"></i> Stockage des données :</h6>
+                    <p>
+                        Cette application utilise un stockage en mémoire conformément aux exigences du projet.
+                        Les données sont initialisées avec 6 produits d'exemple et persistent pendant la session.
+                    </p>
+
+                    <h6><i class="fas fa-shield-alt"></i> Sécurité :</h6>
+                    <ul>
+                        <li>Protection CSRF avec ValidateAntiForgeryToken</li>
+                        <li>Validation des entrées utilisateur</li>
+                        <li>Gestion sécurisée des erreurs</li>
+                        <li>Confirmation obligatoire pour les suppressions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-primary text-white mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="fas fa-graduation-cap"></i> Contexte Académique
+                    </h6>
+                    <p class="card-text">
+                        <strong>Professeur :</strong> Marcel Stefan Wagner, PhD<br>
+                        <strong>Cours :</strong> Retail (e-commerce)<br>
+                        <strong>Technologie :</strong> ASP.NET Core MVC<br>
+                        <strong>Institution :</strong> ESTIAM PARIS<br>
+                        <strong>Année :</strong> 2025
+                    </p>
+                </div>
+            </div>
+
+            <div class="card bg-success text-white mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="fas fa-check-circle"></i> Objectifs Atteints
+                    </h6>
+                    <ul class="mb-0">
+                        <li>CRUD complet</li>
+                        <li>Tag Helpers personnalisés</li>
+                        <li>Interface moderne</li>
+                        <li>Validation des données</li>
+                        <li>Recherche fonctionnelle</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="fas fa-code"></i> Code Source
+                    </h6>
+                    <p class="card-text">
+                        Le code source complet est disponible et documenté selon les standards
+                        de développement professionnel.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-light">
+                <h6><i class="fas fa-exclamation-circle"></i> Note importante :</h6>
+                <p class="mb-0">
+                    Cette application est développée à des fins pédagogiques et de démonstration.
+                    Elle illustre les bonnes pratiques de développement web avec ASP.NET Core MVC
+                    et respecte toutes les exigences du cahier des charges académique.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

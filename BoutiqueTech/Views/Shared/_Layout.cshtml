@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BoutiqueTech</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <!-- Animate.css (pulse badge) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/" style="font-size: 1.5rem; font-weight: bold;">
+                    <i class="fas fa-laptop"></i> BoutiqueTech
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Accueil" asp-action="Index">
+                                <i class="fas fa-home"></i> Accueil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Produits" asp-action="Index" asp-route-vue="catalogue">
+                                <i class="fas fa-store"></i> Catalogue
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-warning fw-bold" asp-controller="Produits" asp-action="Index" asp-route-vue="admin">
+                                <i class="fas fa-cogs"></i> Administration
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Droite (confidentialité + panier + utilisateur) -->
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Accueil" asp-action="ViePrive">
+                                <i class="fas fa-shield-alt"></i> Confidentialité
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" asp-controller="Panier" asp-action="Index" id="panierLink" title="Mon panier">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span id="compteurPanier"
+                                      class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
+                                      style="display:none; font-size:0.65rem; min-width:1.2rem; padding:0.2rem 0.4rem;">
+                                    0
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> Mon Compte
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Create"><i class="fas fa-user-plus"></i> Sign Up</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container-fluid" style="margin-top: 80px;">
+        @if (TempData["MessageSucces"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="fas fa-check-circle"></i> @TempData["MessageSucces"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["MessageErreur"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="fas fa-exclamation-circle"></i> @TempData["MessageErreur"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["MessageInfo"] != null)
+        {
+            <div class="alert alert-info alert-dismissible fade show">
+                <i class="fas fa-info-circle"></i> @TempData["MessageInfo"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @RenderBody() <!-- IMPORTANT : doit être appelé sinon erreur -->
+    </main>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-laptop"></i> BoutiqueTech</h5>
+                    <p>Votre boutique technologique de confiance</p>
+                    <p><small>Spécialisée dans les dernières innovations tech</small></p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; @DateTime.Now.Year BoutiqueTech. Projet ASP.NET Core MVC</p>
+                    <p><strong>Développé par :</strong> Khadim mbacke FALL</p>
+                    <p><strong>Professeur :</strong> Marcel Stefan Wagner, PhD</p>
+                    <p><small>ESTIAM - Formation E-Commerce</small></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Script Panier -->
+    <script>
+        function mettreAJourCompteurPanier() {
+            let nbArticles = parseInt(localStorage.getItem('panierCount') || '0', 10);
+            if (isNaN(nbArticles) || nbArticles < 0) nbArticles = 0;
+
+            const compteur = document.getElementById('compteurPanier');
+            const lienPanier = document.getElementById('panierLink');
+            if (!compteur || !lienPanier) return;
+
+            if (nbArticles > 0) {
+                compteur.textContent = nbArticles;
+                compteur.style.display = 'inline-block';
+                lienPanier.classList.add('text-warning');
+            } else {
+                compteur.style.display = 'none';
+                lienPanier.classList.remove('text-warning');
+            }
+        }
+
+        function ajouterAuPanier(produitId, quantite = 1) {
+            let panierCount = parseInt(localStorage.getItem('panierCount') || '0', 10);
+            if (isNaN(panierCount) || panierCount < 0) panierCount = 0;
+
+            panierCount += parseInt(quantite, 10) || 0;
+            localStorage.setItem('panierCount', panierCount);
+
+            mettreAJourCompteurPanier();
+
+            const compteur = document.getElementById('compteurPanier');
+            if (compteur) {
+                compteur.classList.add('animate__animated', 'animate__pulse');
+                setTimeout(() => compteur.classList.remove('animate__animated', 'animate__pulse'), 600);
+            }
+
+            showToast('Produit ajouté au panier !', 'success');
+        }
+
+        function retirerDuPanier(quantite = 1) {
+            let panierCount = parseInt(localStorage.getItem('panierCount') || '0', 10);
+            if (isNaN(panierCount) || panierCount <= 0) panierCount = 0;
+
+            panierCount = Math.max(0, panierCount - (parseInt(quantite, 10) || 1));
+            localStorage.setItem('panierCount', panierCount);
+
+            mettreAJourCompteurPanier();
+            showToast('Produit retiré du panier.', 'info');
+        }
+
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+            const bgClass = type === 'success' ? 'success' : (type === 'error' ? 'danger' : 'primary');
+            const iconClass = type === 'success' ? 'check-circle' : (type === 'error' ? 'exclamation-circle' : 'info-circle');
+
+            const toastHtml = `
+                <div class="toast align-items-center text-white bg-${bgClass} border-0 mb-2" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas fa-${iconClass} me-2"></i>${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+
+            toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+            const toastElement = toastContainer.lastElementChild;
+            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+            toast.show();
+
+            toastElement.addEventListener('hidden.bs.toast', () => toastElement.remove());
+        }
+
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container position-fixed top-0 end-0 p-3';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
+            return container;
+        }
+
+        document.addEventListener('DOMContentLoaded', mettreAJourCompteurPanier);
+        window.addEventListener('storage', e => {
+            if (e.key === 'panierCount') mettreAJourCompteurPanier();
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

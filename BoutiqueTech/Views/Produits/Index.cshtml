@@ -1,0 +1,95 @@
+﻿@model IEnumerable<BoutiqueTech.Models.Produit>
+@{
+    ViewData["Title"] = "Catalogue des Produits";
+}
+
+<div class="hero-section bg-gradient text-white text-center py-4 mb-5 rounded">
+    <div class="container">
+        <h1 class="display-5">
+            <i class="fas fa-store"></i> Notre Catalogue
+        </h1>
+        <p class="lead">Découvrez notre sélection de produits technologiques</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Barre de recherche et filtres -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3">
+                <input type="hidden" name="vue" value="catalogue" />
+                <div class="col-md-6">
+                    <label for="chaineRecherche" class="form-label">
+                        <i class="fas fa-search"></i> Rechercher un produit
+                    </label>
+                    <input type="text" class="form-control" id="chaineRecherche" name="chaineRecherche"
+                           value="@ViewData["FiltreActuel"]" placeholder="Nom, description, marque...">
+                </div>
+                <div class="col-md-4">
+                    <label for="categorie" class="form-label">
+                        <i class="fas fa-filter"></i> Catégorie
+                    </label>
+                    <select class="form-select" id="categorie" name="categorie">
+                        <option value="">Toutes les catégories</option>
+                        @foreach (var cat in (IEnumerable<CategorieProduit>)ViewData["Categories"])
+                        {
+                            <option value="@cat" selected="@(ViewData["CategorieActuelle"]?.Equals(cat) == true)">
+                                @(cat switch
+                                {
+                                    CategorieProduit.Telephone => "Téléphones",
+                                    CategorieProduit.OrdinateurPortable => "Ordinateurs Portables",
+                                    CategorieProduit.Tablette => "Tablettes",
+                                    CategorieProduit.Accessoire => "Accessoires",
+                                    CategorieProduit.Gaming => "Gaming",
+                                    _ => cat.ToString()
+                                })
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Rechercher
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Catalogue des produits -->
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var produit in Model)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                    <!-- Mode catalogue : seulement le bouton Voir -->
+                    <carte-produit produit="@produit" afficher-actions="false"></carte-produit>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-4">
+            <div class="bg-light p-3 rounded">
+                <p class="text-muted mb-2">
+                    <i class="fas fa-info-circle"></i>
+                    @Model.Count() produit(s) dans notre catalogue
+                </p>
+                <small class="text-muted">
+                    Cliquez sur "Voir les détails" pour plus d'informations sur chaque produit
+                </small>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">Aucun produit trouvé</h4>
+            <p class="text-muted">Essayez de modifier vos critères de recherche</p>
+            <a asp-action="Index" asp-route-vue="catalogue" class="btn btn-outline-primary">
+                <i class="fas fa-refresh"></i> Voir tous les produits
+            </a>
+        </div>
+    }
+</div>

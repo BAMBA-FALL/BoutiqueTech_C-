@@ -1,0 +1,455 @@
+﻿@model BoutiqueTech.Models.Produit
+@{
+    ViewData["Title"] = "Détails - " + Model.Nom;
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <img src="@Model.UrlImage" alt="@Model.Nom" class="img-fluid rounded shadow" 
+                     style="max-height: 400px; object-fit: cover;"
+                     onerror="this.src='/images/produit-defaut.jpg'">
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-controller="Accueil" asp-action="Index">
+                        <i class="fas fa-home"></i> Accueil
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-controller="Produits" asp-action="Index" asp-route-vue="catalogue">
+                        <i class="fas fa-store"></i> Catalogue
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">@Model.Nom</li>
+            </ol>
+        </nav>
+
+        <h1 class="h2 mb-3">@Model.Nom</h1>
+        
+        <div class="mb-3">
+            <statut-produit statut="@Model.Statut"></statut-produit>
+        </div>
+        
+        <div class="mb-3">
+            <span class="badge bg-secondary me-2">
+                <i class="fas fa-tag"></i> 
+                @(Model.Categorie switch
+                {
+                    CategorieProduit.Telephone => "Téléphone",
+                    CategorieProduit.OrdinateurPortable => "Ordinateur Portable",
+                    CategorieProduit.Tablette => "Tablette",
+                    CategorieProduit.Accessoire => "Accessoire",
+                    CategorieProduit.Gaming => "Gaming",
+                    _ => Model.Categorie.ToString()
+                })
+            </span>
+            @if (!string.IsNullOrEmpty(Model.Marque))
+            {
+                <span class="badge bg-info">
+                    <i class="fas fa-industry"></i> @Model.Marque
+                </span>
+            }
+        </div>
+
+        <p class="text-muted fs-5 mb-4">@Model.Description</p>
+
+        <div class="price-section mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-muted mb-1">Prix unitaire :</h6>
+                    <h5 class="text-success mb-0">
+                        @Model.Prix.ToString("C")
+                    </h5>
+                </div>
+                <div class="text-end">
+                    <h6 class="text-muted mb-1">Prix total :</h6>
+                    <h3 class="text-primary mb-0" id="prixTotal">
+                        @Model.Prix.ToString("C")
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION D'ACHAT -->
+        <div class="purchase-section mb-4">
+            @if (Model.Statut == StatutProduit.EnStock && Model.Stock > 0)
+            {
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-4">
+                        <label for="quantite" class="form-label fw-bold">Quantité :</label>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-outline-secondary" onclick="changerQuantite(-1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" class="form-control text-center" 
+                                   id="quantite" value="1" min="1" max="@Model.Stock" style="max-width: 80px;">
+                            <button type="button" class="btn btn-outline-secondary" onclick="changerQuantite(1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">Max: @Model.Stock disponible(s)</small>
+                    </div>
+                </div>
+                
+                <div class="d-grid">
+                    <button type="button" class="btn btn-primary btn-lg" id="btnAjouterPanier">
+                        <i class="fas fa-cart-plus"></i> Ajouter au panier
+                    </button>
+                </div>
+            }
+            else if (Model.Statut == StatutProduit.PreCommande)
+            {
+                <div class="d-grid">
+                    <button type="button" class="btn btn-warning btn-lg" onclick="precommander()">
+                        <i class="fas fa-clock"></i> Pré-commander
+                    </button>
+                    <p class="text-muted text-center mt-2 mb-0">
+                        <i class="fas fa-info-circle"></i> Article en pré-commande
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="d-grid">
+                    <button type="button" class="btn btn-secondary btn-lg" disabled>
+                        <i class="fas fa-times"></i> Rupture de stock
+                    </button>
+                    <p class="text-muted text-center mt-2 mb-0">
+                        <i class="fas fa-exclamation-triangle"></i> Article temporairement indisponible
+                    </p>
+                </div>
+            }
+        </div>
+
+        <!-- INFORMATIONS PRODUIT -->
+        <div class="product-details mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-info-circle"></i> Informations du Produit</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <tr>
+                            <td><strong><i class="fas fa-warehouse"></i> Disponibilité:</strong></td>
+                            <td>
+                                @if (Model.Stock > 10)
+                                {
+                                    <span class="badge bg-success">En stock (@Model.Stock unités)</span>
+                                }
+                                else if (Model.Stock > 0)
+                                {
+                                    <span class="badge bg-warning">Stock limité (@Model.Stock unités)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Rupture de stock</span>
+                                }
+                            </td>
+                        </tr>
+                        @if (!string.IsNullOrEmpty(Model.Marque))
+                        {
+                            <tr>
+                                <td><strong><i class="fas fa-industry"></i> Marque:</strong></td>
+                                <td>@Model.Marque</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td><strong><i class="fas fa-tag"></i> Catégorie:</strong></td>
+                            <td>
+                                @(Model.Categorie switch
+                                {
+                                    CategorieProduit.Telephone => "Téléphone",
+                                    CategorieProduit.OrdinateurPortable => "Ordinateur Portable",
+                                    CategorieProduit.Tablette => "Tablette",
+                                    CategorieProduit.Accessoire => "Accessoire",
+                                    CategorieProduit.Gaming => "Gaming",
+                                    _ => Model.Categorie.ToString()
+                                })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong><i class="fas fa-hashtag"></i> Référence:</strong></td>
+                            <td><code>PROD-@Model.Id.ToString("D4")</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong><i class="fas fa-shipping-fast"></i> Livraison:</strong></td>
+                            <td>
+                                <span class="text-success">
+                                    <i class="fas fa-truck"></i> Livraison gratuite dès 50€
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOUTONS DE NAVIGATION -->
+        <div class="action-buttons">
+            <div class="d-grid gap-2">
+                <a asp-action="Index" asp-route-vue="catalogue" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Retour au catalogue
+                </a>
+                <a asp-controller="Accueil" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-home"></i> Retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section produits similaires -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-star"></i> Découvrez d'autres produits</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <div class="p-3">
+                            <i class="fas fa-mobile-alt fa-2x text-primary mb-2"></i>
+                            <h6>Téléphones</h6>
+                            <p class="text-muted small">Découvrez nos smartphones dernière génération</p>
+                            <a asp-action="Index" asp-route-vue="catalogue" asp-route-categorie="@CategorieProduit.Telephone" 
+                               class="btn btn-outline-primary btn-sm">
+                                Voir les téléphones
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3">
+                            <i class="fas fa-laptop fa-2x text-success mb-2"></i>
+                            <h6>Ordinateurs</h6>
+                            <p class="text-muted small">Explorez nos ordinateurs portables performants</p>
+                            <a asp-action="Index" asp-route-vue="catalogue" asp-route-categorie="@CategorieProduit.OrdinateurPortable" 
+                               class="btn btn-outline-success btn-sm">
+                                Voir les ordinateurs
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3">
+                            <i class="fas fa-gamepad fa-2x text-danger mb-2"></i>
+                            <h6>Gaming</h6>
+                            <p class="text-muted small">Découvrez nos consoles et accessoires gaming</p>
+                            <a asp-action="Index" asp-route-vue="catalogue" asp-route-categorie="@CategorieProduit.Gaming" 
+                               class="btn btn-outline-danger btn-sm">
+                                Voir gaming
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Données du produit
+        const produitActuel = {
+            id: @Model.Id,
+            nom: '@Html.Raw(Model.Nom.Replace("'", "\\'"))',
+            prix: @Model.Prix,
+            urlImage: '@Model.UrlImage',
+            marque: '@Html.Raw((Model.Marque ?? "").Replace("'", "\\'"))',
+            description: '@Html.Raw((Model.Description ?? "").Replace("'", "\\'"))',
+            stock: @Model.Stock
+        };
+
+        // Fonction pour changer la quantité
+        function changerQuantite(delta) {
+            const input = document.getElementById('quantite');
+            if (!input) return;
+            
+            const currentValue = parseInt(input.value) || 1;
+            const newValue = currentValue + delta;
+            const max = parseInt(input.getAttribute('max')) || @Model.Stock;
+            const min = parseInt(input.getAttribute('min')) || 1;
+            
+            if (newValue >= min && newValue <= max) {
+                input.value = newValue;
+                mettreAJourPrixTotal();
+            }
+        }
+
+        // Fonction pour mettre à jour le prix total
+        function mettreAJourPrixTotal() {
+            const quantite = parseInt(document.getElementById('quantite')?.value) || 1;
+            const prixTotal = quantite * produitActuel.prix;
+            
+            const prixFormate = prixTotal.toLocaleString('fr-FR', {
+                style: 'currency',
+                currency: 'EUR'
+            });
+            
+            const elementPrixTotal = document.getElementById('prixTotal');
+            if (elementPrixTotal) {
+                elementPrixTotal.textContent = prixFormate;
+            }
+        }
+
+        // Fonction pour les pré-commandes
+        function precommander() {
+            if (confirm('Souhaitez-vous être notifié lors de la disponibilité de ce produit ?')) {
+                showToast('Vous serez notifié dès que le produit sera disponible !', 'info');
+            }
+        }
+
+        // Gestion du panier localStorage
+        function obtenirPanier() {
+            const panierData = localStorage.getItem('panier');
+            return panierData ? JSON.parse(panierData) : [];
+        }
+
+        function sauvegarderPanier(panier) {
+            localStorage.setItem('panier', JSON.stringify(panier));
+            mettreAJourCompteurGlobal();
+        }
+
+        function ajouterAuPanierLocal(produit, quantite) {
+            const panier = obtenirPanier();
+            const existant = panier.find(item => item.id === produit.id);
+            
+            if (existant) {
+                existant.quantite += quantite;
+            } else {
+                panier.push({ ...produit, quantite });
+            }
+            
+            sauvegarderPanier(panier);
+            return true;
+        }
+
+        function mettreAJourCompteurGlobal() {
+            const panier = obtenirPanier();
+            const totalItems = panier.reduce((total, item) => total + item.quantite, 0);
+            
+            // Mettre à jour localStorage pour compatibilité
+            localStorage.setItem('panierCount', totalItems);
+            
+            // Mettre à jour compteur navbar
+            const compteur = document.getElementById('compteurPanier');
+            if (compteur) {
+                compteur.textContent = totalItems;
+                compteur.style.display = totalItems > 0 ? 'inline-block' : 'none';
+                
+                // Animation
+                if (totalItems > 0) {
+                    compteur.classList.add('animate__animated', 'animate__pulse');
+                    setTimeout(() => compteur.classList.remove('animate__animated', 'animate__pulse'), 600);
+                }
+            }
+        }
+
+        // Fonction pour afficher les notifications
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+            const bgClass = type === 'success' ? 'success' : (type === 'error' ? 'danger' : 'primary');
+            const iconClass = type === 'success' ? 'check-circle' : (type === 'error' ? 'exclamation-circle' : 'info-circle');
+
+            const toastHtml = `
+                <div class="toast align-items-center text-white bg-${bgClass} border-0 mb-2" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas fa-${iconClass} me-2"></i>${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+            const toastElement = toastContainer.lastElementChild;
+            const bsToast = new bootstrap.Toast(toastElement, { delay: 3000 });
+            bsToast.show();
+            
+            toastElement.addEventListener('hidden.bs.toast', () => toastElement.remove());
+        }
+
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container position-fixed top-0 end-0 p-3';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
+            return container;
+        }
+
+        // Gestionnaire principal d'ajout au panier
+        function ajouterAuPanier() {
+            const quantiteInput = document.getElementById('quantite');
+            const quantite = parseInt(quantiteInput?.value) || 1;
+            const max = produitActuel.stock;
+            
+            // Vérifications
+            if (quantite <= 0) {
+                showToast('Quantité invalide', 'error');
+                return;
+            }
+            
+            if (quantite > max) {
+                showToast(`Quantité maximale disponible: ${max}`, 'error');
+                return;
+            }
+
+            // Animation du bouton
+            const button = document.getElementById('btnAjouterPanier');
+            if (button) {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ajout en cours...';
+                button.disabled = true;
+                
+                // Simuler un délai pour l'animation
+                setTimeout(() => {
+                    // Ajouter au localStorage
+                    const succes = ajouterAuPanierLocal(produitActuel, quantite);
+                    
+                    if (succes) {
+                        showToast(`${quantite} article(s) ajouté(s) au panier !`, 'success');
+                    } else {
+                        showToast('Erreur lors de l\'ajout au panier', 'error');
+                    }
+                    
+                    // Rétablir le bouton
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 500);
+            } else {
+                // Pas d'animation si pas de bouton
+                ajouterAuPanierLocal(produitActuel, quantite);
+                showToast(`${quantite} article(s) ajouté(s) au panier !`, 'success');
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser le prix total
+            mettreAJourPrixTotal();
+            
+            // Initialiser le compteur
+            mettreAJourCompteurGlobal();
+            
+            // Event listener pour le changement de quantité
+            const quantiteInput = document.getElementById('quantite');
+            if (quantiteInput) {
+                quantiteInput.addEventListener('input', mettreAJourPrixTotal);
+            }
+            
+            // Event listener pour le bouton d'ajout au panier
+            const btnAjouterPanier = document.getElementById('btnAjouterPanier');
+            if (btnAjouterPanier) {
+                btnAjouterPanier.addEventListener('click', ajouterAuPanier);
+            }
+        });
+    </script>
+}

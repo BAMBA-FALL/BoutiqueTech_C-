@@ -1,0 +1,208 @@
+﻿@model BoutiqueTech.Models.Produit
+@{
+    ViewData["Title"] = "Détails Admin - " + Model.Nom;
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <img src="@Model.UrlImage" alt="@Model.Nom" class="img-fluid rounded shadow" 
+                     style="max-height: 400px; object-fit: cover;"
+                     onerror="this.src='/images/produit-defaut.jpg'">
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a asp-controller="Accueil" asp-action="Index">
+                        <i class="fas fa-home"></i> Accueil
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a asp-controller="Produits" asp-action="Index" asp-route-vue="admin">
+                        <i class="fas fa-cogs"></i> Administration
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">@Model.Nom</li>
+            </ol>
+        </nav>
+
+        <div class="alert alert-warning">
+            <i class="fas fa-shield-alt"></i>
+            <strong>Mode Administrateur :</strong> Vous pouvez modifier ou supprimer ce produit.
+        </div>
+
+        <h1 class="h2 mb-3">@Model.Nom</h1>
+        
+        <div class="mb-3">
+            <statut-produit statut="@Model.Statut"></statut-produit>
+        </div>
+        
+        <div class="mb-3">
+            <span class="badge bg-secondary me-2">
+                <i class="fas fa-tag"></i> 
+                @(Model.Categorie switch
+                {
+                    CategorieProduit.Telephone => "Téléphone",
+                    CategorieProduit.OrdinateurPortable => "Ordinateur Portable",
+                    CategorieProduit.Tablette => "Tablette",
+                    CategorieProduit.Accessoire => "Accessoire",
+                    CategorieProduit.Gaming => "Gaming",
+                    _ => Model.Categorie.ToString()
+                })
+            </span>
+            @if (!string.IsNullOrEmpty(Model.Marque))
+            {
+                <span class="badge bg-info">
+                    <i class="fas fa-industry"></i> @Model.Marque
+                </span>
+            }
+        </div>
+
+        <p class="text-muted fs-5 mb-4">@Model.Description</p>
+
+        <div class="price-section mb-4">
+            <h3 class="text-success mb-0">
+                <affichage-prix prix="@Model.Prix"></affichage-prix>
+            </h3>
+        </div>
+
+        <div class="product-details mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-info-circle"></i> Informations Détaillées</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <tr>
+                            <td><strong><i class="fas fa-warehouse"></i> Stock disponible:</strong></td>
+                            <td>
+                                <indicateur-stock stock="@Model.Stock"></indicateur-stock>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong><i class="fas fa-calendar-alt"></i> Date d'ajout:</strong></td>
+                            <td>@Model.DateAjout.ToString("dd/MM/yyyy à HH:mm")</td>
+                        </tr>
+                        <tr>
+                            <td><strong><i class="fas fa-hashtag"></i> Référence:</strong></td>
+                            <td><code>PROD-@Model.Id.ToString("D4")</code></td>
+                        </tr>
+                        @if (!string.IsNullOrEmpty(Model.Marque))
+                        {
+                            <tr>
+                                <td><strong><i class="fas fa-industry"></i> Marque:</strong></td>
+                                <td>@Model.Marque</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td><strong><i class="fas fa-tag"></i> Catégorie:</strong></td>
+                            <td>
+                                @(Model.Categorie switch
+                                {
+                                    CategorieProduit.Telephone => "Téléphone",
+                                    CategorieProduit.OrdinateurPortable => "Ordinateur Portable",
+                                    CategorieProduit.Tablette => "Tablette",
+                                    CategorieProduit.Accessoire => "Accessoire",
+                                    CategorieProduit.Gaming => "Gaming",
+                                    _ => Model.Categorie.ToString()
+                                })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong><i class="fas fa-link"></i> URL Image:</strong></td>
+                            <td><small class="text-muted">@Model.UrlImage</small></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIONS ADMINISTRATEUR -->
+        <div class="action-buttons">
+            <div class="card bg-light">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-tools"></i> Actions Administrateur</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2 d-md-flex">
+                        <a asp-action="Modifier" asp-route-id="@Model.Id" class="btn btn-warning me-md-2">
+                            <i class="fas fa-edit"></i> Modifier ce produit
+                        </a>
+                        <a asp-action="Supprimer" asp-route-id="@Model.Id" class="btn btn-danger me-md-2">
+                            <i class="fas fa-trash"></i> Supprimer ce produit
+                        </a>
+                    </div>
+                    <div class="d-grid gap-2 mt-2">
+                        <a asp-action="Index" asp-route-vue="admin" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à l'administration
+                        </a>
+                        <a asp-controller="Produits" asp-action="Details" asp-route-id="@Model.Id" asp-route-retour="catalogue" class="btn btn-outline-primary">
+                            <i class="fas fa-eye"></i> Voir en mode public
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section actions rapides -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-lightning-bolt"></i> Actions Rapides</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="fas fa-edit fa-2x text-warning mb-2"></i>
+                            <h6>Modifier</h6>
+                            <p class="text-muted small">Mettre à jour les informations, prix ou stock</p>
+                            <a asp-action="Modifier" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-sm">
+                                Modifier
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="fas fa-copy fa-2x text-info mb-2"></i>
+                            <h6>Dupliquer</h6>
+                            <p class="text-muted small">Créer un nouveau produit basé sur celui-ci</p>
+                            <a asp-action="Creer" class="btn btn-outline-info btn-sm">
+                                Nouveau produit
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="fas fa-eye fa-2x text-success mb-2"></i>
+                            <h6>Aperçu Public</h6>
+                            <p class="text-muted small">Voir comment les clients voient ce produit</p>
+                            <a asp-action="Details" asp-route-id="@Model.Id" asp-route-retour="catalogue" class="btn btn-outline-success btn-sm">
+                                Vue client
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="fas fa-trash fa-2x text-danger mb-2"></i>
+                            <h6>Supprimer</h6>
+                            <p class="text-muted small">Retirer définitivement ce produit</p>
+                            <a asp-action="Supprimer" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm">
+                                Supprimer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

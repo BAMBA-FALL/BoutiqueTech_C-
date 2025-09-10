@@ -1,0 +1,234 @@
+﻿@model BoutiqueTech.Models.Produit
+@{
+    ViewData["Title"] = "Ajouter un Nouveau Produit";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="fas fa-plus"></i> Ajouter un Nouveau Produit</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Creer" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label asp-for="Nom" class="form-label"></label>
+                                <input asp-for="Nom" class="form-control" placeholder="Ex: iPhone 15 Pro">
+                                <span asp-validation-for="Nom" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label"></label>
+                                <textarea asp-for="Description" class="form-control" rows="4"
+                                          placeholder="Description détaillée du produit"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Marque" class="form-label"></label>
+                                <input asp-for="Marque" class="form-control" placeholder="Ex: Apple, Samsung">
+                                <span asp-validation-for="Marque" class="text-danger"></span>
+                            </div>
+
+                            <!-- SECTION UPLOAD D'IMAGE -->
+                            <div class="mb-3">
+                                <label for="ImageFile" class="form-label">
+                                    <i class="fas fa-image"></i> Image du produit
+                                </label>
+                                <input type="file" class="form-control" id="ImageFile" name="ImageFile" 
+                                       accept="image/*" onchange="previewImage(this)">
+                                <small class="form-text text-muted">
+                                    Formats acceptés : JPG, PNG, GIF (max 5MB). Laissez vide pour utiliser l'image par défaut.
+                                </small>
+                            </div>
+
+                            <!-- APERÇU DE L'IMAGE -->
+                            <div class="mb-3">
+                                <div id="imagePreview" style="display: none;">
+                                    <label class="form-label">Aperçu de l'image :</label>
+                                    <div class="border rounded p-2 bg-light text-center">
+                                        <img id="previewImg" src="" alt="Aperçu" 
+                                             style="max-width: 200px; max-height: 200px; object-fit: cover;">
+                                        <div class="mt-2">
+                                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                    onclick="removeImage()">
+                                                <i class="fas fa-times"></i> Supprimer l'image
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- OPTION ALTERNATIVE URL -->
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="useUrlInstead" 
+                                           onchange="toggleUrlInput()">
+                                    <label class="form-check-label" for="useUrlInstead">
+                                        Utiliser une URL d'image externe à la place
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3" id="urlImageDiv" style="display: none;">
+                                <label asp-for="UrlImage" class="form-label"></label>
+                                <input asp-for="UrlImage" class="form-control" placeholder="https://exemple.com/image.jpg">
+                                <span asp-validation-for="UrlImage" class="text-danger"></span>
+                                <small class="form-text text-muted">URL complète vers l'image</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label asp-for="Prix" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">€</span>
+                                    <input asp-for="Prix" class="form-control" step="0.01" placeholder="0.00">
+                                </div>
+                                <span asp-validation-for="Prix" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Categorie" class="form-label"></label>
+                                <select asp-for="Categorie" class="form-select">
+                                    <option value="">Choisir une catégorie</option>
+                                    @foreach (var categorie in (IEnumerable<CategorieProduit>)ViewData["Categories"])
+                                    {
+                                        <option value="@categorie">
+                                            @(categorie switch
+                                            {
+                                                CategorieProduit.Telephone => "Téléphone",
+                                                CategorieProduit.OrdinateurPortable => "Ordinateur Portable",
+                                                CategorieProduit.Tablette => "Tablette",
+                                                CategorieProduit.Accessoire => "Accessoire",
+                                                CategorieProduit.Gaming => "Gaming",
+                                                _ => categorie.ToString()
+                                            })
+                                        </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Categorie" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Statut" class="form-label"></label>
+                                <select asp-for="Statut" class="form-select">
+                                    @foreach (var statut in (IEnumerable<StatutProduit>)ViewData["Statuts"])
+                                    {
+                                        <option value="@statut">
+                                            @(statut switch
+                                            {
+                                                StatutProduit.EnStock => "En Stock",
+                                                StatutProduit.RuptureStock => "Rupture de Stock",
+                                                StatutProduit.PreCommande => "Pré-commande",
+                                                _ => statut.ToString()
+                                            })
+                                        </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Statut" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Stock" class="form-label"></label>
+                                <input asp-for="Stock" class="form-control" type="number" min="0" placeholder="0">
+                                <span asp-validation-for="Stock" class="text-danger"></span>
+                            </div>
+
+                            <!-- AIDE VISUELLE -->
+                            <div class="alert alert-info">
+                                <i class="fas fa-lightbulb"></i>
+                                <strong>Conseils :</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Utilisez des images de bonne qualité</li>
+                                    <li>Format recommandé : 500x500px</li>
+                                    <li>Taille max : 5MB</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" asp-route-vue="admin" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Créer le produit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Fonction pour prévisualiser l'image sélectionnée
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                const file = input.files[0];
+                
+                // Vérifier la taille du fichier (5MB max)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('L\'image est trop volumineuse. Taille maximum : 5MB');
+                    input.value = '';
+                    return;
+                }
+                
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Fonction pour supprimer l'image sélectionnée
+        function removeImage() {
+            document.getElementById('ImageFile').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('previewImg').src = '';
+        }
+        
+        // Fonction pour basculer entre upload de fichier et URL
+        function toggleUrlInput() {
+            const checkbox = document.getElementById('useUrlInstead');
+            const urlDiv = document.getElementById('urlImageDiv');
+            const fileInput = document.getElementById('ImageFile');
+            
+            if (checkbox.checked) {
+                urlDiv.style.display = 'block';
+                fileInput.disabled = true;
+                removeImage();
+            } else {
+                urlDiv.style.display = 'none';
+                fileInput.disabled = false;
+                document.getElementById('UrlImage').value = '';
+            }
+        }
+        
+        // Validation côté client avant soumission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('ImageFile');
+            const urlInput = document.getElementById('UrlImage');
+            const useUrl = document.getElementById('useUrlInstead').checked;
+            
+            // Vérifier qu'au moins une image est fournie (optionnel)
+            // Vous pouvez activer cette validation si nécessaire
+            /*
+            if (!useUrl && !fileInput.files.length && !urlInput.value) {
+                alert('Veuillez sélectionner une image ou fournir une URL');
+                e.preventDefault();
+                return false;
+            }
+            */
+        });
+    </script>
+}
