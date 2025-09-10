@@ -1,0 +1,310 @@
+# 💻 BoutiqueTech - E-Commerce ASP.NET Core MVC
+
+![BoutiqueTech Logo](https://img.shields.io/badge/BoutiqueTech-E--Commerce-blue?style=for-the-badge&logo=microsoft)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-8.0-purple?style=for-the-badge&logo=dotnet)
+![C#](https://img.shields.io/badge/C%23-11.0-green?style=for-the-badge&logo=csharp)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple?style=for-the-badge&logo=bootstrap)
+
+## 🛍️ **Titre du Projet**
+**"BoutiqueTech - Plateforme E-Commerce pour Produits Technologiques"**
+
+---
+
+## 📋 **Description du Projet**
+
+**BoutiqueTech** est une application web e-commerce moderne développée en **ASP.NET Core MVC** spécialisée dans la vente de produits technologiques. Cette plateforme permet la gestion complète d'un catalogue de produits avec des fonctionnalités CRUD avancées, une interface utilisateur intuitive et des Tag Helpers personnalisés.
+
+### 🎯 **Objectif Académique**
+Ce projet a été réalisé dans le cadre du cours **"Retail (e-commerce)"** de l'**ESTIAM PARIS**, sous la supervision du **Professeur Marcel Stefan Wagner, PhD**, pour démontrer la maîtrise des technologies ASP.NET Core MVC, C#, Razor et des bonnes pratiques de développement web.
+
+---
+
+## ✨ **Fonctionnalités Principales**
+
+### 🔧 **CRUD Complet**
+- ✅ **Création** de nouveaux produits avec validation
+- ✅ **Lecture** et affichage du catalogue complet
+- ✅ **Modification** des produits existants
+- ✅ **Suppression** avec confirmation obligatoire
+
+### 🔍 **Recherche et Filtrage**
+- **Recherche textuelle** par nom, description ou marque
+- **Filtrage par catégorie** (Téléphone, Ordinateur, Tablette, etc.)
+- **Combinaison** recherche + filtre
+
+### 🏷️ **Tag Helpers Personnalisés**
+- `<carte-produit>` : Affichage des cartes produits
+- `<statut-produit>` : Badges de statut colorés
+- `<affichage-prix>` : Formatage des prix en euros
+- `<indicateur-stock>` : Indicateurs visuels de stock
+- `<resume-statut>` : Statistiques du catalogue
+
+### 📊 **Types de Données Variés**
+- **String** : Nom, Description, Marque
+- **Decimal** : Prix avec validation
+- **Int** : Stock, ID
+- **DateTime** : Date d'ajout automatique
+- **Enum** : Catégories et Statuts
+- **URL** : Images des produits
+
+---
+
+## 🛠️ **Technologies Utilisées**
+
+| Technologie | Version | Usage |
+|-------------|---------|-------|
+| **ASP.NET Core** | 8.0 | Framework principal |
+| **C#** | 11.0 | Langage de programmation |
+| **Razor** | - | Moteur de templates |
+| **Bootstrap** | 5.3 | Framework CSS |
+| **Font Awesome** | 6.0 | Icônes |
+| **jQuery** | 3.6 | Interactions JavaScript |
+| **Visual Studio** | 2022 | IDE de développement |
+
+---
+
+## 📁 **Structure du Projet**
+
+```
+BoutiqueTech/
+├── 📁 Controllers/
+│   ├── AccueilController.cs
+│   └── ProduitsController.cs
+├── 📁 Models/
+│   └── Produit.cs (Enums inclus)
+├── 📁 Services/
+│   ├── IServiceProduit.cs
+│   └── ServiceProduit.cs
+├── 📁 TagHelpers/
+│   ├── CarteProduitTagHelper.cs
+│   ├── StatutProduitTagHelper.cs
+│   ├── AffichagePrixTagHelper.cs
+│   ├── IndicateurStockTagHelper.cs
+│   └── ResumeStatutTagHelper.cs
+├── 📁 Views/
+│   ├── 📁 Shared/
+│   │   ├── _Layout.cshtml
+│   │   └── Error.cshtml
+│   ├── 📁 Accueil/
+│   │   ├── Index.cshtml
+│   │   └── ViePrive.cshtml
+│   └── 📁 Produits/
+│       ├── Index.cshtml
+│       ├── Details.cshtml
+│       ├── Creer.cshtml
+│       ├── Modifier.cshtml
+│       └── Supprimer.cshtml
+└── 📁 wwwroot/
+    ├── 📁 css/
+    ├── 📁 js/
+    └── 📁 images/
+```
+
+---
+
+## 🚀 **Installation et Utilisation**
+
+### **Prérequis**
+- Visual Studio 2022
+- .NET 8.0 SDK
+- Navigateur web moderne
+
+### **Étapes d'Installation**
+1. **Cloner le repository**
+   ```bash
+   https://github.com/BAMBA-FALL/BoutiqueTech_C-.git
+   cd BoutiqueTech
+   ```
+
+2. **Ouvrir dans Visual Studio 2022**
+   ```bash
+   start BoutiqueTech.sln
+   ```
+
+3. **Restaurer les packages NuGet**
+   ```bash
+   dotnet restore
+   ```
+
+4. **Lancer l'application**
+   ```bash
+   dotnet run
+   ```
+
+5. **Accéder à l'application**
+   ```
+   https://localhost:7096
+   ```
+
+---
+
+## 📸 **Captures d'Écran**
+
+### 🏠 **Page d'Accueil**
+- Hero section avec gradient moderne
+- Produits vedettes en cartes
+- Statistiques du catalogue
+- Navigation intuitive
+
+### 🛍️ **Catalogue Produits**
+- Liste complète avec pagination visuelle
+- Barre de recherche fonctionnelle
+- Filtres par catégorie
+- Actions CRUD sur chaque produit
+
+### ➕ **Formulaires**
+- Interface de création propre
+- Validation côté client et serveur
+- Messages d'erreur contextuels
+- Confirmation de suppression
+
+---
+
+## 🎨 **Caractéristiques Techniques**
+
+### **Architecture MVC**
+- **Modèles** : Entités métier avec validation
+- **Vues** : Interface utilisateur responsive
+- **Contrôleurs** : Logique de traitement
+
+### **Stockage en Mémoire**
+- Aucune base de données requise
+- Données persistantes pendant la session
+- 6 produits d'exemple préchargés
+
+### **Tag Helpers Personnalisés**
+- Réutilisabilité du code d'affichage
+- Encapsulation de la logique de présentation
+- Facilité de maintenance
+
+### **Interface Responsive**
+- Compatible mobile, tablette et desktop
+- Bootstrap 5.3 avec personnalisations
+- Animations CSS fluides
+
+---
+
+## 👥 **Équipe de Développement**
+
+| Rôle | Nom | Contribution |
+|------|-----|-------------|
+| **Développeur Principal** | [Khadim mbacké FALL] | Architecture, CRUD, Tag Helpers, Interface |
+| Validation, Tests, Documentation |
+| CSS, Responsive, Tag Helpers |
+
+### 🎓 **Encadrement Académique**
+- **Professeur :** Marcel Stefan Wagner, PhD
+- **Cours :** Retail (e-commerce)
+- **Institution :** ESTIAM PARIS
+- **Année :** 2025
+
+---
+
+## 📊 **Spécifications Fonctionnelles**
+
+### **Modèle de Données - Produit**
+```csharp
+public class Produit
+{
+    public int Id { get; set; }
+    public string Nom { get; set; }
+    public string Description { get; set; }
+    public decimal Prix { get; set; }
+    public CategorieProduit Categorie { get; set; }
+    public StatutProduit Statut { get; set; }
+    public DateTime DateAjout { get; set; }
+    public int Stock { get; set; }
+    public string UrlImage { get; set; }
+    public string Marque { get; set; }
+}
+```
+
+### **Énumérations**
+- **CategorieProduit** : Téléphone, OrdinateurPortable, Tablette, Accessoire, Gaming
+- **StatutProduit** : EnStock, RuptureStock, PreCommande
+
+---
+
+## 🔍 **Fonctionnalités Avancées**
+
+### **Validation**
+- Validation côté serveur avec DataAnnotations
+- Validation côté client avec jQuery Unobtrusive
+- Messages d'erreur personnalisés en français
+
+### **Sécurité**
+- Protection CSRF avec ValidateAntiForgeryToken
+- Validation des entrées utilisateur
+- Gestion sécurisée des erreurs
+
+### **UX/UI**
+- Messages de confirmation avec TempData
+- Animations au survol des éléments
+- Indicateurs visuels de statut
+- Interface intuitive et accessible
+
+---
+
+## 📈 **Métriques du Projet**
+
+- **Lignes de code** : ~2000+
+- **Fichiers** : 25+
+- **Tag Helpers** : 5 personnalisés
+- **Vues** : 8 complètes
+- **Modèles** : 1 avec validation
+- **Contrôleurs** : 2 avec actions CRUD
+- **Services** : 1 avec interface
+
+---
+
+## 🎯 **Objectifs Pédagogiques Atteints**
+
+✅ **Maîtrise d'ASP.NET Core MVC**  
+✅ **Utilisation avancée de C# et Razor**  
+✅ **Création de Tag Helpers personnalisés**  
+✅ **Interface utilisateur moderne avec Bootstrap**  
+✅ **Opérations CRUD complètes**  
+✅ **Validation des données**  
+✅ **Architecture MVC respectée**  
+✅ **Documentation technique complète**  
+
+---
+
+## 📝 **Notes de Version**
+
+### **Version 1.0.0** (Septembre 2025)
+- ✨ Version initiale complète
+- ✨ CRUD complet des produits
+- ✨ 5 Tag Helpers personnalisés
+- ✨ Interface responsive Bootstrap 5.3
+- ✨ Recherche et filtrage avancés
+- ✨ Validation complète des formulaires
+
+---
+
+## 📄 **Licence et Utilisation**
+
+Ce projet a été développé à des fins **académiques** dans le cadre du cours universitaire. Il peut être utilisé comme référence pour l'apprentissage d'ASP.NET Core MVC.
+
+**© 2025 - Projet Académique ESTIAM**  
+**Sous la supervision du Professeur Marcel Stefan Wagner, PhD**
+
+---
+
+## 📞 **Contact**
+
+Pour toute question concernant ce projet :
+
+- **Email étudiant :** [khadim-mbacke.fall@estiam.com]
+- **Repository GitHub :** [https://github.com/BAMBA-FALL/BoutiqueTech_C-.git]
+- **Professeur :** Marcel Stefan Wagner, PhD
+
+---
+
+## 🙏 **Remerciements**
+
+Nous remercions le **Professeur Marcel Stefan Wagner, PhD** pour son encadrement et ses conseils tout au long de ce projet, ainsi que l'**ESTIAM PARIS** pour la formation de qualité en développement web moderne.
+
+---
+
+**⭐ N'hésitez pas à donner une étoile à ce repository si ce projet vous a aidé dans votre apprentissage !**
