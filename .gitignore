@@ -23,3 +23,6 @@ appsettings.*.local.json
 # Divers
 *.log
 .DS_Store
+
+# Inventaire Ansible local (adresses des serveurs)
+ansible/inventory.ini

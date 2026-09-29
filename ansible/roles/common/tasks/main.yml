@@ -1,0 +1,73 @@
+---
+- name: Mettre à jour le cache APT
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Mettre à jour les paquets du système
+  ansible.builtin.apt:
+    upgrade: safe
+  when: system_upgrade | bool
+
+- name: Installer les paquets de base
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - git
+      - ufw
+      - fail2ban
+      - unattended-upgrades
+    state: present
+
+- name: Définir le fuseau horaire
+  community.general.timezone:
+    name: "{{ timezone }}"
+
+- name: Activer les mises à jour de sécurité automatiques
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Démarrer fail2ban (protection contre le brute-force SSH)
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: true
+
+- name: Configurer le pare-feu UFW
+  when: configure_firewall | bool
+  tags: [firewall]
+  block:
+    - name: Limiter les connexions SSH (anti brute-force)
+      community.general.ufw:
+        rule: limit
+        name: OpenSSH
+
+    - name: Autoriser HTTP
+      community.general.ufw:
+        rule: allow
+        port: "80"
+        proto: tcp
+
+    - name: Bloquer le reste du trafic entrant et activer UFW
+      community.general.ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+- name: Durcir la configuration SSH
+  ansible.builtin.template:
+    src: sshd-hardening.conf.j2
+    dest: /etc/ssh/sshd_config.d/99-hardening.conf
+    owner: root
+    group: root
+    mode: "0644"
+    validate: /usr/sbin/sshd -t -f %s
+  when: ssh_hardening | bool
+  notify: Redémarrer SSH

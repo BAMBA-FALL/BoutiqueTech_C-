@@ -1,0 +1,19 @@
+---
+# --- Application ---
+app_name: boutiquetech
+app_repo: https://github.com/BAMBA-FALL/BoutiqueTech_C-.git
+app_version: main            # branche, tag ou SHA à déployer
+app_dir: /opt/boutiquetech
+app_port: 8080               # port du conteneur, exposé uniquement sur 127.0.0.1
+
+# --- Reverse proxy ---
+server_name: "_"             # nom de domaine du site (ex. boutique.example.com)
+
+# --- Système ---
+timezone: Europe/Paris
+system_upgrade: true         # mise à jour des paquets lors du déploiement
+configure_firewall: true     # UFW : SSH + HTTP uniquement
+
+# Désactive l'authentification SSH par mot de passe et la connexion root.
+# À activer seulement une fois l'accès par clé SSH vérifié.
+ssh_hardening: false

@@ -1,0 +1,49 @@
+---
+- name: Créer le répertoire de l'application
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Récupérer le code source
+  ansible.builtin.git:
+    repo: "{{ app_repo }}"
+    dest: "{{ app_dir }}/src"
+    version: "{{ app_version }}"
+    force: true
+  register: app_source
+
+- name: Construire l'image Docker (taguée avec le commit déployé)
+  community.docker.docker_image:
+    name: "{{ app_name }}"
+    tag: "{{ app_source.after[:12] }}"
+    source: build
+    build:
+      path: "{{ app_dir }}/src"
+      pull: true
+
+- name: Lancer le conteneur
+  community.docker.docker_container:
+    name: "{{ app_name }}"
+    image: "{{ app_name }}:{{ app_source.after[:12] }}"
+    state: started
+    restart_policy: unless-stopped
+    published_ports:
+      - "127.0.0.1:{{ app_port }}:8080"
+    env:
+      ASPNETCORE_ENVIRONMENT: Production
+    cap_drop:
+      - ALL
+    security_opts:
+      - no-new-privileges:true
+
+- name: Attendre que l'application réponde
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ app_port }}/"
+    status_code: 200
+  register: app_health
+  until: app_health.status == 200
+  retries: 20
+  delay: 3

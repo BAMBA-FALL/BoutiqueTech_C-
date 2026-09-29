@@ -1,0 +1,22 @@
+---
+- name: Déployer BoutiqueTech sur un serveur Ubuntu
+  hosts: boutiquetech
+  become: true
+
+  pre_tasks:
+    - name: Vérifier que la cible est un Ubuntu supporté
+      ansible.builtin.assert:
+        that:
+          - ansible_distribution == "Ubuntu"
+          - ansible_distribution_version is version("22.04", ">=")
+        fail_msg: "Ce playbook cible Ubuntu 22.04 ou plus récent."
+
+  roles:
+    - role: common
+      tags: [common]
+    - role: docker
+      tags: [docker]
+    - role: app
+      tags: [app]
+    - role: nginx
+      tags: [nginx]
