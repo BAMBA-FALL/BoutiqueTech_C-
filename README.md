@@ -9,6 +9,7 @@
 
 [![CI/CD DevSecOps](https://github.com/BAMBA-FALL/BoutiqueTech_C-/actions/workflows/ci.yml/badge.svg)](https://github.com/BAMBA-FALL/BoutiqueTech_C-/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/BAMBA-FALL/BoutiqueTech_C-/actions/workflows/codeql.yml/badge.svg)](https://github.com/BAMBA-FALL/BoutiqueTech_C-/actions/workflows/codeql.yml)
+[![Ansible](https://github.com/BAMBA-FALL/BoutiqueTech_C-/actions/workflows/ansible.yml/badge.svg)](https://github.com/BAMBA-FALL/BoutiqueTech_C-/actions/workflows/ansible.yml)
 
 ## 🛍️ **Titre du Projet**
 **"BoutiqueTech - Plateforme E-Commerce pour Produits Technologiques"**
@@ -19,9 +20,9 @@
 
 **BoutiqueTech** est une application web e-commerce moderne développée en **ASP.NET Core MVC** spécialisée dans la vente de produits technologiques. Cette plateforme permet la gestion complète d'un catalogue de produits avec des fonctionnalités CRUD avancées, une interface utilisateur intuitive et des Tag Helpers personnalisés.
 
-Le projet intègre une démarche **DevOps / DevSecOps** : l'application est **conteneurisée avec Docker** (image multi-étapes, exécution non-root) et chaque push déclenche un **pipeline CI/CD GitHub Actions** qui compile le code, audite les dépendances, analyse le code source (**SAST avec CodeQL**), détecte les secrets (**Gitleaks**), scanne l'image Docker (**Trivy**) et vérifie que le conteneur démarre correctement. La sécurité est ainsi intégrée dès le développement (*shift-left*).
+Le projet intègre une démarche **DevOps / DevSecOps** : l'application est **conteneurisée avec Docker** (image multi-étapes, exécution non-root) et chaque push déclenche un **pipeline CI/CD GitHub Actions** qui compile le code, audite les dépendances, analyse le code source (**SAST avec CodeQL**), détecte les secrets (**Gitleaks**), scanne l'image Docker (**Trivy**) et vérifie que le conteneur démarre correctement. Le déploiement sur un serveur **Ubuntu** est automatisé avec **Ansible** (durcissement du serveur, Docker, reverse proxy nginx), et le playbook est lui-même testé en CI. La sécurité est ainsi intégrée dès le développement (*shift-left*).
 
-La partie DevOps a été réalisée avec l'assistance de **Claude (Anthropic)**, utilisé comme outil d'ingénierie : analyse des logs du pipeline, écriture des scripts Bash et des workflows CI/CD, et revue de sécurité du code (voir [Développement assisté par IA](#-développement-assisté-par-ia)).
+La partie DevOps a été réalisée avec l'assistance de **Claude (Anthropic)**, utilisé comme outil d'ingénierie : analyse des logs du pipeline, écriture des scripts Bash, du playbook Ansible et des workflows CI/CD, et revue de sécurité du code (voir [Développement assisté par IA](#-développement-assisté-par-ia)).
 
 ### 🎯 **Objectif du Projet**
 Ce projet démontre la maîtrise des technologies **ASP.NET Core MVC**, **C#** et **Razor**, ainsi que l'application des bonnes pratiques de développement web : architecture MVC, injection de dépendances, validation des données et composants réutilisables — tout en appliquant une chaîne d'intégration continue sécurisée, de la compilation jusqu'à l'image Docker prête à déployer.
@@ -75,6 +76,8 @@ Ce projet démontre la maîtrise des technologies **ASP.NET Core MVC**, **C#** e
 | **Trivy** | - | Scan de vulnérabilités de l'image |
 | **Gitleaks** | - | Détection de secrets dans l'historique Git |
 | **Dependabot** | - | Mises à jour automatiques des dépendances |
+| **Ansible** | - | Configuration et déploiement du serveur Ubuntu |
+| **nginx** | - | Reverse proxy avec en-têtes de sécurité |
 | **Claude (Anthropic)** | - | Assistant IA : analyse de logs, scripts, revue de sécurité |
 
 ---
@@ -86,8 +89,18 @@ BoutiqueTech_C-/
 ├── 📁 .github/
 │   ├── 📁 workflows/
 │   │   ├── ci.yml          # Pipeline CI/CD DevSecOps
-│   │   └── codeql.yml      # Analyse statique CodeQL
+│   │   ├── codeql.yml      # Analyse statique CodeQL
+│   │   └── ansible.yml     # Lint + déploiement de test du playbook
 │   └── dependabot.yml      # Mises à jour des dépendances
+├── 📁 ansible/
+│   ├── deploy.yml          # Playbook principal
+│   ├── group_vars/all.yml  # Variables (version, domaine, pare-feu…)
+│   ├── inventory.example.ini
+│   └── 📁 roles/
+│       ├── common/         # Durcissement : UFW, fail2ban, mises à jour auto, SSH
+│       ├── docker/         # Docker Engine depuis le dépôt officiel
+│       ├── app/            # Build de l'image et lancement du conteneur
+│       └── nginx/          # Reverse proxy
 ├── Dockerfile              # Image multi-étapes, non-root
 ├── .dockerignore
 └── 📁 BoutiqueTech/
@@ -167,6 +180,18 @@ docker run -d -p 8080:8080 --name boutiquetech boutiquetech
 ```
 L'application est alors accessible sur `http://localhost:8080`.
 
+### 🚀 **Déploiement sur un serveur Ubuntu (Ansible)**
+Prérequis : un serveur Ubuntu 22.04 ou 24.04 accessible en SSH avec un utilisateur `sudo`, et Ansible installé sur le poste de déploiement.
+
+```bash
+cd ansible
+ansible-galaxy collection install -r requirements.yml
+cp inventory.example.ini inventory.ini   # renseigner l'IP et l'utilisateur du serveur
+ansible-playbook deploy.yml --ask-become-pass
+```
+
+Pour déployer une version précise : `ansible-playbook deploy.yml -e app_version=<tag ou SHA>`.
+
 ---
 
 ## 📸 **Captures d'Écran**
@@ -220,6 +245,27 @@ Déclenché à chaque `push` et `pull request` sur `main` :
 | **Smoke test** | Docker + curl | Vérifie que le conteneur démarre et répond en HTTP |
 | **Mises à jour** | Dependabot | Pull requests hebdomadaires pour NuGet, Docker et GitHub Actions |
 
+### **Déploiement automatisé avec Ansible**
+
+Le playbook `ansible/deploy.yml` prépare un serveur Ubuntu vierge et y déploie l'application :
+
+```
+Internet ──► UFW (22, 80) ──► nginx :80 ──► conteneur BoutiqueTech 127.0.0.1:8080
+```
+
+| Rôle | Actions |
+|------|---------|
+| **common** | Mises à jour, fuseau horaire, **UFW** (SSH limité + HTTP), **fail2ban**, mises à jour de sécurité automatiques, durcissement SSH optionnel (`ssh_hardening`) |
+| **docker** | Installation de Docker Engine depuis le dépôt officiel, rotation des logs |
+| **app** | Clone de la version demandée, build de l'image taguée avec le commit, conteneur sans capabilities Linux (`cap_drop: ALL`, `no-new-privileges`), exposé uniquement en local, vérification de santé |
+| **nginx** | Reverse proxy, suppression de la version du serveur, en-têtes de sécurité (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`) |
+
+**Le playbook est testé en CI** (workflow `ansible.yml`) :
+1. **ansible-lint** avec le profil `production`
+2. **Déploiement réel** sur un runner Ubuntu jetable
+3. **Test d'idempotence** : un second passage doit se terminer avec `changed=0`
+4. **Test de bout en bout** : requête HTTP à travers nginx et contrôle des en-têtes de sécurité
+
 ### **Conteneurisation sécurisée**
 - **Build multi-étapes** : le SDK .NET n'est présent que dans l'étape de build, l'image finale ne contient que le runtime ASP.NET
 - **Utilisateur non-root** : le conteneur s'exécute avec l'utilisateur non privilégié de l'image officielle Microsoft
@@ -237,6 +283,7 @@ J'utilise **Claude (Anthropic)** comme assistant d'ingénierie DevOps. Je garde 
 | **Analyse des logs du pipeline** | Diagnostic d'un échec du job Docker (`Unable to resolve action aquasecurity/trivy-action@0.28.0`) : l'action avait changé de schéma de tags. Correction en épinglant l'action sur un SHA de commit, une bonne pratique contre les attaques de la chaîne d'approvisionnement |
 | **Écriture de scripts Bash** | Étapes du pipeline : audit des vulnérabilités NuGet qui fait échouer le build sur High/Critical, smoke test qui attend que le conteneur réponde en HTTP |
 | **Workflows CI/CD & conteneurisation** | Rédaction des workflows GitHub Actions, du `Dockerfile` multi-étapes non-root et de la configuration Dependabot |
+| **Playbook Ansible pour serveurs Linux** | Rédaction des rôles de configuration d'un serveur Ubuntu (durcissement, Docker, nginx) et du workflow qui déploie le playbook sur un runner jetable et vérifie son idempotence |
 | **Revue de sécurité du code** | Détection des mots de passe stockés en clair (remplacés par un hachage PBKDF2), d'une protection CSRF manquante et d'artefacts de build versionnés |
 | **Débogage du build** | Identification d'un fichier `gitignore` compilé comme du code C#, qui empêchait le projet de compiler depuis un clone propre |
 
@@ -347,6 +394,7 @@ public class Produit
 ✅ **Conteneurisation Docker sécurisée (multi-étapes, non-root)**  
 ✅ **Pipeline CI/CD avec GitHub Actions**  
 ✅ **Intégration de la sécurité dans la CI (SAST, SCA, secrets, scan d'image)**  
+✅ **Infrastructure as Code : déploiement Ubuntu automatisé avec Ansible**  
 ✅ **Utilisation d'un assistant IA (Claude) dans un workflow DevOps**  
 
 ---
@@ -366,6 +414,7 @@ public class Produit
 - 🔄 Pipeline CI/CD GitHub Actions
 - 🔐 CodeQL, Trivy, Gitleaks, audit NuGet et Dependabot
 - 🔑 Hachage des mots de passe et protection CSRF sur l'authentification
+- ⚙️ Playbook Ansible de déploiement sur Ubuntu (UFW, fail2ban, Docker, nginx), testé en CI
 
 ---
 
