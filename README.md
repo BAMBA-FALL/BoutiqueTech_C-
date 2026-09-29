@@ -286,7 +286,7 @@ Projet personnel réalisé dans le cadre de mon portfolio de développeur .NET. 
 
 Pour toute question concernant ce projet :
 
-- **Email :** khadim-mbacke.fall@estiam.com
+- **Email :** contact.bamba.pro@gmail.com
 - **GitHub :** [BAMBA-FALL](https://github.com/BAMBA-FALL)
 - **Repository :** [BoutiqueTech_C-](https://github.com/BAMBA-FALL/BoutiqueTech_C-)
 
