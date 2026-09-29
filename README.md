@@ -4,6 +4,11 @@
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-8.0-purple?style=for-the-badge&logo=dotnet)
 ![C#](https://img.shields.io/badge/C%23-11.0-green?style=for-the-badge&logo=csharp)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple?style=for-the-badge&logo=bootstrap)
+![Docker](https://img.shields.io/badge/Docker-Conteneuris%C3%A9-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+
+[![CI/CD DevSecOps](https://github.com/BAMBA-FALL/BoutiqueTech_C-/actions/workflows/ci.yml/badge.svg)](https://github.com/BAMBA-FALL/BoutiqueTech_C-/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/BAMBA-FALL/BoutiqueTech_C-/actions/workflows/codeql.yml/badge.svg)](https://github.com/BAMBA-FALL/BoutiqueTech_C-/actions/workflows/codeql.yml)
 
 ## 🛍️ **Titre du Projet**
 **"BoutiqueTech - Plateforme E-Commerce pour Produits Technologiques"**
@@ -14,8 +19,10 @@
 
 **BoutiqueTech** est une application web e-commerce moderne développée en **ASP.NET Core MVC** spécialisée dans la vente de produits technologiques. Cette plateforme permet la gestion complète d'un catalogue de produits avec des fonctionnalités CRUD avancées, une interface utilisateur intuitive et des Tag Helpers personnalisés.
 
+Le projet intègre une démarche **DevOps / DevSecOps** : l'application est **conteneurisée avec Docker** (image multi-étapes, exécution non-root) et chaque push déclenche un **pipeline CI/CD GitHub Actions** qui compile le code, audite les dépendances, analyse le code source (**SAST avec CodeQL**), détecte les secrets (**Gitleaks**), scanne l'image Docker (**Trivy**) et vérifie que le conteneur démarre correctement. La sécurité est ainsi intégrée dès le développement (*shift-left*).
+
 ### 🎯 **Objectif du Projet**
-Ce projet démontre la maîtrise des technologies **ASP.NET Core MVC**, **C#** et **Razor**, ainsi que l'application des bonnes pratiques de développement web : architecture MVC, injection de dépendances, validation des données et composants réutilisables.
+Ce projet démontre la maîtrise des technologies **ASP.NET Core MVC**, **C#** et **Razor**, ainsi que l'application des bonnes pratiques de développement web : architecture MVC, injection de dépendances, validation des données et composants réutilisables — tout en appliquant une chaîne d'intégration continue sécurisée, de la compilation jusqu'à l'image Docker prête à déployer.
 
 ---
 
@@ -60,44 +67,58 @@ Ce projet démontre la maîtrise des technologies **ASP.NET Core MVC**, **C#** e
 | **Font Awesome** | 6.0 | Icônes |
 | **jQuery** | 3.6 | Interactions JavaScript |
 | **Visual Studio** | 2022 | IDE de développement |
+| **Docker** | - | Conteneurisation (build multi-étapes) |
+| **GitHub Actions** | - | Pipeline CI/CD |
+| **CodeQL** | - | Analyse statique de sécurité (SAST) |
+| **Trivy** | - | Scan de vulnérabilités de l'image |
+| **Gitleaks** | - | Détection de secrets dans l'historique Git |
+| **Dependabot** | - | Mises à jour automatiques des dépendances |
 
 ---
 
 ## 📁 **Structure du Projet**
 
 ```
-BoutiqueTech/
-├── 📁 Controllers/
-│   ├── AccueilController.cs
-│   └── ProduitsController.cs
-├── 📁 Models/
-│   └── Produit.cs (Enums inclus)
-├── 📁 Services/
-│   ├── IServiceProduit.cs
-│   └── ServiceProduit.cs
-├── 📁 TagHelpers/
-│   ├── CarteProduitTagHelper.cs
-│   ├── StatutProduitTagHelper.cs
-│   ├── AffichagePrixTagHelper.cs
-│   ├── IndicateurStockTagHelper.cs
-│   └── ResumeStatutTagHelper.cs
-├── 📁 Views/
-│   ├── 📁 Shared/
-│   │   ├── _Layout.cshtml
-│   │   └── Error.cshtml
-│   ├── 📁 Accueil/
-│   │   ├── Index.cshtml
-│   │   └── ViePrive.cshtml
-│   └── 📁 Produits/
-│       ├── Index.cshtml
-│       ├── Details.cshtml
-│       ├── Creer.cshtml
-│       ├── Modifier.cshtml
-│       └── Supprimer.cshtml
-└── 📁 wwwroot/
-    ├── 📁 css/
-    ├── 📁 js/
-    └── 📁 images/
+BoutiqueTech_C-/
+├── 📁 .github/
+│   ├── 📁 workflows/
+│   │   ├── ci.yml          # Pipeline CI/CD DevSecOps
+│   │   └── codeql.yml      # Analyse statique CodeQL
+│   └── dependabot.yml      # Mises à jour des dépendances
+├── Dockerfile              # Image multi-étapes, non-root
+├── .dockerignore
+└── 📁 BoutiqueTech/
+    ├── 📁 Controllers/
+    │   ├── AccueilController.cs
+    │   └── ProduitsController.cs
+    ├── 📁 Models/
+    │   └── Produit.cs (Enums inclus)
+    ├── 📁 Services/
+    │   ├── IServiceProduit.cs
+    │   └── ServiceProduit.cs
+    ├── 📁 TagHelpers/
+    │   ├── CarteProduitTagHelper.cs
+    │   ├── StatutProduitTagHelper.cs
+    │   ├── AffichagePrixTagHelper.cs
+    │   ├── IndicateurStockTagHelper.cs
+    │   └── ResumeStatutTagHelper.cs
+    ├── 📁 Views/
+    │   ├── 📁 Shared/
+    │   │   ├── _Layout.cshtml
+    │   │   └── Error.cshtml
+    │   ├── 📁 Accueil/
+    │   │   ├── Index.cshtml
+    │   │   └── ViePrive.cshtml
+    │   └── 📁 Produits/
+    │       ├── Index.cshtml
+    │       ├── Details.cshtml
+    │       ├── Creer.cshtml
+    │       ├── Modifier.cshtml
+    │       └── Supprimer.cshtml
+    └── 📁 wwwroot/
+        ├── 📁 css/
+        ├── 📁 js/
+        └── 📁 images/
 ```
 
 ---
@@ -136,6 +157,13 @@ BoutiqueTech/
    https://localhost:7096
    ```
 
+### 🐳 **Lancement avec Docker**
+```bash
+docker build -t boutiquetech .
+docker run -d -p 8080:8080 --name boutiquetech boutiquetech
+```
+L'application est alors accessible sur `http://localhost:8080`.
+
 ---
 
 ## 📸 **Captures d'Écran**
@@ -157,6 +185,43 @@ BoutiqueTech/
 - Validation côté client et serveur
 - Messages d'erreur contextuels
 - Confirmation de suppression
+
+---
+
+## 🔄 **DevOps & DevSecOps**
+
+### **Pipeline CI/CD (GitHub Actions)**
+Déclenché à chaque `push` et `pull request` sur `main` :
+
+```
+┌──────────────────┐   ┌──────────────────────┐   ┌───────────────────────┐
+│ Gitleaks         │   │ Build .NET (Release) │   │ CodeQL (SAST)         │
+│ secrets dans Git │   │ + audit NuGet (SCA)  │   │ analyse du code C#    │
+└────────┬─────────┘   └──────────┬───────────┘   └───────────────────────┘
+         └────────────┬───────────┘
+                      ▼
+         ┌──────────────────────────┐
+         │ Build de l'image Docker  │
+         │ → Scan Trivy (HIGH/CRIT) │
+         │ → Smoke test du conteneur│
+         └──────────────────────────┘
+```
+
+| Étape | Outil | Rôle |
+|-------|-------|------|
+| **Détection de secrets** | Gitleaks | Bloque le pipeline si un mot de passe, token ou clé est présent dans l'historique Git |
+| **Build** | .NET 8 SDK | Compilation en configuration Release |
+| **SCA** | `dotnet list package --vulnerable` | Échec si une dépendance NuGet a une vulnérabilité High/Critical |
+| **SAST** | CodeQL | Analyse statique du code C# (injections, XSS, mauvaises pratiques) + exécution hebdomadaire |
+| **Scan d'image** | Trivy | Échec si l'image Docker contient une vulnérabilité HIGH/CRITICAL corrigeable |
+| **Smoke test** | Docker + curl | Vérifie que le conteneur démarre et répond en HTTP |
+| **Mises à jour** | Dependabot | Pull requests hebdomadaires pour NuGet, Docker et GitHub Actions |
+
+### **Conteneurisation sécurisée**
+- **Build multi-étapes** : le SDK .NET n'est présent que dans l'étape de build, l'image finale ne contient que le runtime ASP.NET
+- **Utilisateur non-root** : le conteneur s'exécute avec l'utilisateur non privilégié de l'image officielle Microsoft
+- **`.dockerignore`** : exclusion des artefacts de build, fichiers IDE et données locales
+- **Cache des couches** : restauration NuGet séparée pour accélérer les builds
 
 ---
 
@@ -224,10 +289,13 @@ public class Produit
 - Validation côté client avec jQuery Unobtrusive
 - Messages d'erreur personnalisés en français
 
-### **Sécurité**
-- Protection CSRF avec ValidateAntiForgeryToken
-- Validation des entrées utilisateur
+### **Sécurité applicative**
+- **Mots de passe hachés** avec `PasswordHasher` d'ASP.NET Core Identity (PBKDF2 + sel), jamais stockés en clair
+- Protection **CSRF** avec `ValidateAntiForgeryToken` sur les formulaires
+- **HTTPS** forcé et en-tête **HSTS** en production
+- Validation des entrées utilisateur (DataAnnotations)
 - Gestion sécurisée des erreurs
+- Aucun secret ni artefact de build versionné (`.gitignore` dédié)
 
 ### **UX/UI**
 - Messages de confirmation avec TempData
@@ -259,6 +327,9 @@ public class Produit
 ✅ **Validation des données**  
 ✅ **Architecture MVC respectée**  
 ✅ **Documentation technique complète**  
+✅ **Conteneurisation Docker sécurisée (multi-étapes, non-root)**  
+✅ **Pipeline CI/CD avec GitHub Actions**  
+✅ **Intégration de la sécurité dans la CI (SAST, SCA, secrets, scan d'image)**  
 
 ---
 
@@ -271,6 +342,12 @@ public class Produit
 - ✨ Interface responsive Bootstrap 5.3
 - ✨ Recherche et filtrage avancés
 - ✨ Validation complète des formulaires
+
+### **Version 1.1.0** (Septembre 2026)
+- 🐳 Conteneurisation Docker (multi-étapes, non-root)
+- 🔄 Pipeline CI/CD GitHub Actions
+- 🔐 CodeQL, Trivy, Gitleaks, audit NuGet et Dependabot
+- 🔑 Hachage des mots de passe et protection CSRF sur l'authentification
 
 ---
 

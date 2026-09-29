@@ -1,0 +1,75 @@
+name: CI/CD DevSecOps
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  secrets-scan:
+    name: Détection de secrets (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: Build & audit des dépendances
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restauration des packages
+        run: dotnet restore BoutiqueTech/BoutiqueTech.csproj
+
+      - name: Build (Release)
+        run: dotnet build BoutiqueTech/BoutiqueTech.csproj -c Release --no-restore
+
+      - name: Audit des vulnérabilités NuGet (SCA)
+        run: |
+          dotnet list BoutiqueTech/BoutiqueTech.csproj package --vulnerable --include-transitive | tee vuln.txt
+          if grep -qE "\b(High|Critical)\b" vuln.txt; then
+            echo "::error::Dépendances vulnérables (High/Critical) détectées"
+            exit 1
+          fi
+
+  docker:
+    name: Image Docker & scan Trivy
+    runs-on: ubuntu-latest
+    needs: [build, secrets-scan]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build de l'image
+        run: docker build -t boutiquetech:${{ github.sha }} .
+
+      - name: Scan de l'image (Trivy)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: boutiquetech:${{ github.sha }}
+          format: table
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+
+      - name: Smoke test du conteneur
+        run: |
+          docker run -d --name app -p 8080:8080 boutiquetech:${{ github.sha }}
+          for i in $(seq 1 15); do
+            if curl -fsS http://localhost:8080/ > /dev/null; then echo "Application OK"; exit 0; fi
+            sleep 2
+          done
+          docker logs app
+          exit 1

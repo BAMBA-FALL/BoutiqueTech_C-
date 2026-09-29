@@ -13,6 +13,7 @@ namespace BoutiqueTech.Controllers
 
         // POST: User/Create
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(UserModel user)
         {
             if (!ModelState.IsValid) return View(user);
@@ -27,6 +28,7 @@ namespace BoutiqueTech.Controllers
 
         // POST: User/Login
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Login(string email, string motDePasse)
         {
             if (_userService.Authentifier(email, motDePasse))
