@@ -1,5 +1,5 @@
 # ---- Étape 1 : build ----
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Restaurer les dépendances en premier pour profiter du cache Docker
