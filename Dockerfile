@@ -10,7 +10,7 @@ COPY BoutiqueTech/ BoutiqueTech/
 RUN dotnet publish BoutiqueTech/BoutiqueTech.csproj -c Release -o /app/publish --no-restore /p:UseAppHost=false
 
 # ---- Étape 2 : runtime (image minimale, sans SDK) ----
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 COPY --from=build /app/publish .
