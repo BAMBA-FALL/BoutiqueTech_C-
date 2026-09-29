@@ -14,8 +14,8 @@
 
 **BoutiqueTech** est une application web e-commerce moderne développée en **ASP.NET Core MVC** spécialisée dans la vente de produits technologiques. Cette plateforme permet la gestion complète d'un catalogue de produits avec des fonctionnalités CRUD avancées, une interface utilisateur intuitive et des Tag Helpers personnalisés.
 
-### 🎯 **Objectif Académique**
-Ce projet a été réalisé dans le cadre du cours **"Retail (e-commerce)"** de l'**ESTIAM PARIS**, sous la supervision du **Professeur Marcel Stefan Wagner, PhD**, pour démontrer la maîtrise des technologies ASP.NET Core MVC, C#, Razor et des bonnes pratiques de développement web.
+### 🎯 **Objectif du Projet**
+Ce projet démontre la maîtrise des technologies **ASP.NET Core MVC**, **C#** et **Razor**, ainsi que l'application des bonnes pratiques de développement web : architecture MVC, injection de dépendances, validation des données et composants réutilisables.
 
 ---
 
@@ -112,8 +112,8 @@ BoutiqueTech/
 ### **Étapes d'Installation**
 1. **Cloner le repository**
    ```bash
-   https://github.com/BAMBA-FALL/BoutiqueTech_C-.git
-   cd BoutiqueTech
+   git clone https://github.com/BAMBA-FALL/BoutiqueTech_C-.git
+   cd BoutiqueTech_C-
    ```
 
 2. **Ouvrir dans Visual Studio 2022**
@@ -184,19 +184,11 @@ BoutiqueTech/
 
 ---
 
-## 👥 **Équipe de Développement**
+## 👤 **Auteur**
 
 | Rôle | Nom | Contribution |
 |------|-----|-------------|
-| **Développeur Principal** | [Khadim mbacké FALL] | Architecture, CRUD, Tag Helpers, Interface |
-| Validation, Tests, Documentation |
-| CSS, Responsive, Tag Helpers |
-
-### 🎓 **Encadrement Académique**
-- **Professeur :** Marcel Stefan Wagner, PhD
-- **Cours :** Retail (e-commerce)
-- **Institution :** ESTIAM PARIS
-- **Année :** 2025
+| **Développeur Full-Stack .NET** | Khadim Mbacké FALL | Architecture, CRUD, Tag Helpers, Interface, Validation, Tests, Documentation |
 
 ---
 
@@ -257,7 +249,7 @@ public class Produit
 
 ---
 
-## 🎯 **Objectifs Pédagogiques Atteints**
+## 🎯 **Compétences Démontrées**
 
 ✅ **Maîtrise d'ASP.NET Core MVC**  
 ✅ **Utilisation avancée de C# et Razor**  
@@ -284,10 +276,9 @@ public class Produit
 
 ## 📄 **Licence et Utilisation**
 
-Ce projet a été développé à des fins **académiques** dans le cadre du cours Retail E-commerce. Il peut être utilisé comme référence pour l'apprentissage d'ASP.NET Core MVC.
+Projet personnel réalisé dans le cadre de mon portfolio de développeur .NET. Le code est librement consultable à titre de démonstration.
 
-**© 2025 - Projet Académique ESTIAM**  
-**Sous la supervision du Professeur Marcel Stefan Wagner, PhD**
+**© 2025 - Khadim Mbacké FALL**
 
 ---
 
@@ -295,16 +286,10 @@ Ce projet a été développé à des fins **académiques** dans le cadre du cour
 
 Pour toute question concernant ce projet :
 
-- **Email étudiant :** [khadim-mbacke.fall@estiam.com]
-- **Repository GitHub :** [https://github.com/BAMBA-FALL/BoutiqueTech_C-.git]
-- **Professeur :** Marcel Stefan Wagner, PhD
+- **Email :** khadim-mbacke.fall@estiam.com
+- **GitHub :** [BAMBA-FALL](https://github.com/BAMBA-FALL)
+- **Repository :** [BoutiqueTech_C-](https://github.com/BAMBA-FALL/BoutiqueTech_C-)
 
 ---
 
-## 🙏 **Remerciements**
-
-Nous remercions le **Professeur Marcel Stefan Wagner, PhD** pour son encadrement et ses conseils tout au long de ce projet, ainsi que l'**ESTIAM PARIS** pour la formation de qualité en développement web moderne.
-
----
-
-**⭐ N'hésitez pas à donner une étoile à ce repository si ce projet vous a aidé dans votre apprentissage !**
+**⭐ N'hésitez pas à donner une étoile à ce repository si ce projet vous intéresse !**
