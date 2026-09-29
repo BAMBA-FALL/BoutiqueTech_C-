@@ -8,6 +8,10 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # Le projet cible .NET 8 (LTS) : pas de montée de version majeure automatique
+    ignore:
+      - dependency-name: "dotnet/*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
