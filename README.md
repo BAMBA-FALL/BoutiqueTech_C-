@@ -21,6 +21,8 @@
 
 Le projet intègre une démarche **DevOps / DevSecOps** : l'application est **conteneurisée avec Docker** (image multi-étapes, exécution non-root) et chaque push déclenche un **pipeline CI/CD GitHub Actions** qui compile le code, audite les dépendances, analyse le code source (**SAST avec CodeQL**), détecte les secrets (**Gitleaks**), scanne l'image Docker (**Trivy**) et vérifie que le conteneur démarre correctement. La sécurité est ainsi intégrée dès le développement (*shift-left*).
 
+La partie DevOps a été réalisée avec l'assistance de **Claude (Anthropic)**, utilisé comme outil d'ingénierie : analyse des logs du pipeline, écriture des scripts Bash et des workflows CI/CD, et revue de sécurité du code (voir [Développement assisté par IA](#-développement-assisté-par-ia)).
+
 ### 🎯 **Objectif du Projet**
 Ce projet démontre la maîtrise des technologies **ASP.NET Core MVC**, **C#** et **Razor**, ainsi que l'application des bonnes pratiques de développement web : architecture MVC, injection de dépendances, validation des données et composants réutilisables — tout en appliquant une chaîne d'intégration continue sécurisée, de la compilation jusqu'à l'image Docker prête à déployer.
 
@@ -73,6 +75,7 @@ Ce projet démontre la maîtrise des technologies **ASP.NET Core MVC**, **C#** e
 | **Trivy** | - | Scan de vulnérabilités de l'image |
 | **Gitleaks** | - | Détection de secrets dans l'historique Git |
 | **Dependabot** | - | Mises à jour automatiques des dépendances |
+| **Claude (Anthropic)** | - | Assistant IA : analyse de logs, scripts, revue de sécurité |
 
 ---
 
@@ -225,6 +228,20 @@ Déclenché à chaque `push` et `pull request` sur `main` :
 
 ---
 
+## 🤖 **Développement assisté par IA**
+
+J'utilise **Claude (Anthropic)** comme assistant d'ingénierie DevOps. Je garde la main sur les choix techniques et je valide chaque modification ; Claude accélère l'analyse et l'écriture. Sur ce projet, il a servi à :
+
+| Usage | Exemple concret sur ce projet |
+|-------|-------------------------------|
+| **Analyse des logs du pipeline** | Diagnostic d'un échec du job Docker (`Unable to resolve action aquasecurity/trivy-action@0.28.0`) : l'action avait changé de schéma de tags. Correction en épinglant l'action sur un SHA de commit, une bonne pratique contre les attaques de la chaîne d'approvisionnement |
+| **Écriture de scripts Bash** | Étapes du pipeline : audit des vulnérabilités NuGet qui fait échouer le build sur High/Critical, smoke test qui attend que le conteneur réponde en HTTP |
+| **Workflows CI/CD & conteneurisation** | Rédaction des workflows GitHub Actions, du `Dockerfile` multi-étapes non-root et de la configuration Dependabot |
+| **Revue de sécurité du code** | Détection des mots de passe stockés en clair (remplacés par un hachage PBKDF2), d'une protection CSRF manquante et d'artefacts de build versionnés |
+| **Débogage du build** | Identification d'un fichier `gitignore` compilé comme du code C#, qui empêchait le projet de compiler depuis un clone propre |
+
+---
+
 ## 🎨 **Caractéristiques Techniques**
 
 ### **Architecture MVC**
@@ -330,6 +347,7 @@ public class Produit
 ✅ **Conteneurisation Docker sécurisée (multi-étapes, non-root)**  
 ✅ **Pipeline CI/CD avec GitHub Actions**  
 ✅ **Intégration de la sécurité dans la CI (SAST, SCA, secrets, scan d'image)**  
+✅ **Utilisation d'un assistant IA (Claude) dans un workflow DevOps**  
 
 ---
 
